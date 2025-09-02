@@ -286,7 +286,7 @@ else
         
         function loadAppJS()
         {
-            mxscript('js/app.min.js', function()
+            mxscript('js/app.js', function()
             {
                 mxScriptsLoaded = true;
                 checkAllLoaded();
