@@ -99183,7 +99183,18 @@ GitHubLibrary.prototype.open = function() {};
                     this.ui.getEmbeddedPng(mxUtils.bind(this, function(m) {
                         F(f.meta.sha, m)
                     }), c, this.ui.getCurrentFile() != f ? f.getData() : null, g.scale, g.border)
-                } else F(f.meta.sha, Base64.encode(f.getData()))
+                } else F(f.meta.sha, (function(str) {
+                    try {
+                        var bytes = new TextEncoder('utf-8').encode(str);
+                        var bin = '';
+                        for (var i = 0; i < bytes.length; i++) {
+                            bin += String.fromCharCode(bytes[i]);
+                        }
+                        return Base64.encode(bin, true);
+                    } catch (e) {
+                        return Base64.encode(str);
+                    }
+                })(f.getData()))
             });
         p ? this.getSha(u, y, E,
             H, mxUtils.bind(this, function(g) {
@@ -100235,7 +100246,18 @@ GitLabLibrary.prototype.open = function() {};
                     this.ui.getEmbeddedPng(mxUtils.bind(this, function(m) {
                         F(f.meta.last_commit_id, m)
                     }), c, this.ui.getCurrentFile() != f ? f.getData() : null, g.scale, g.border)
-                } else F(f.meta.last_commit_id, Base64.encode(f.getData()))
+                } else F(f.meta.last_commit_id, (function(str) {
+                    try {
+                        var bytes = new TextEncoder('utf-8').encode(str);
+                        var bin = '';
+                        for (var i = 0; i < bytes.length; i++) {
+                            bin += String.fromCharCode(bytes[i]);
+                        }
+                        return Base64.encode(bin, true);
+                    } catch (e) {
+                        return Base64.encode(str);
+                    }
+                })(f.getData()))
             });
         p ? this.getFile(u + "/" + y + "/" + H + "/" + E, mxUtils.bind(this, function(g) {
             f.meta.last_commit_id = g.meta.last_commit_id;
