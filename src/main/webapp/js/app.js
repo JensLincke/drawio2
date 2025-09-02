@@ -99053,7 +99053,18 @@ GitHubLibrary.prototype.open = function() {};
             download_url: p.download_url
         };
         k = p.content;
-        "base64" === p.encoding && (/\.jpe?g$/i.test(p.name) ? k = "data:image/jpeg;base64," + k : /\.gif$/i.test(p.name) ? k = "data:image/gif;base64," + k : /\.png$/i.test(p.name) ? (p = this.ui.extractGraphModelFromPng(k), k = null != p && 0 < p.length ? p : "data:image/png;base64," + k) : k = Base64.decode(k));
+        "base64" === p.encoding && (/\.jpe?g$/i.test(p.name) ? k = "data:image/jpeg;base64," + k : /\.gif$/i.test(p.name) ? k = "data:image/gif;base64," + k : /\.png$/i.test(p.name) ? (p = this.ui.extractGraphModelFromPng(k), k = null != p && 0 < p.length ? p : "data:image/png;base64," + k) : k = (function(b64) {
+            try {
+                var bin = Base64.decode(b64, true);
+                var bytes = new Uint8Array(bin.length);
+                for (var i = 0; i < bin.length; i++) {
+                    bytes[i] = bin.charCodeAt(i);
+                }
+                return new TextDecoder('utf-8').decode(bytes);
+            } catch (e) {
+                return Base64.decode(b64);
+            }
+        })(k));
         return q ? new GitHubLibrary(this.ui, k, f) : new GitHubFile(this.ui, k, f)
     };
     GitHubClient.prototype.insertLibrary = function(f, k, c, p, q) {
@@ -99069,7 +99080,18 @@ GitHubLibrary.prototype.open = function() {};
         0 < d.length && (d += "/");
         d += f;
         this.checkExists(H + "/" + E + "/" + F + "/" + d, !0, mxUtils.bind(this, function(g, m) {
-            g ? q ? (y || (k = Base64.encode(k)), this.showCommitDialog(f, !0, mxUtils.bind(this, function(n) {
+            g ? q ? (y || (k = (function(str) {
+                try {
+                    var bytes = new TextEncoder('utf-8').encode(str);
+                    var bin = '';
+                    for (var i = 0; i < bytes.length; i++) {
+                        bin += String.fromCharCode(bytes[i]);
+                    }
+                    return Base64.encode(bin, true);
+                } catch (e) {
+                    return Base64.encode(str);
+                }
+            })(k)), this.showCommitDialog(f, !0, mxUtils.bind(this, function(n) {
                 this.writeFile(H, E, F, d, n, k, m, mxUtils.bind(this, function(x) {
                     try {
                         var z = JSON.parse(x.getText());
@@ -100113,7 +100135,18 @@ GitLabLibrary.prototype.open = function() {};
             0 < path.length && (path += "/");
             path += f;
             this.checkExists(d + "/" + g + "/" + m + "/" + path, !0, mxUtils.bind(this, function(n, x) {
-                n ? q ? (y || (k = Base64.encode(k)), this.showCommitDialog(f, !0, mxUtils.bind(this, function(z) {
+                n ? q ? (y || (k = (function(str) {
+                    try {
+                        var bytes = new TextEncoder('utf-8').encode(str);
+                        var bin = '';
+                        for (var i = 0; i < bytes.length; i++) {
+                            bin += String.fromCharCode(bytes[i]);
+                        }
+                        return Base64.encode(bin, true);
+                    } catch (e) {
+                        return Base64.encode(str);
+                    }
+                })(k)), this.showCommitDialog(f, !0, mxUtils.bind(this, function(z) {
                     this.writeFile(d, g, m, path, z, k, x, mxUtils.bind(this, function(B) {
                         try {
                             var I = JSON.parse(B.getText());
