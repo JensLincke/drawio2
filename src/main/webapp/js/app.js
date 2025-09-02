@@ -26725,6 +26725,20 @@ Editor.decodeBase64Utf8 = function(b64) {
         return window.atob && !mxClient.IS_SF ? atob(b64) : Base64.decode(b64, true);
     }
 };
+Editor.encodeBase64Utf8 = function(str) {
+    try {
+        // Proper UTF-8 encoding to Base64
+        var bytes = new TextEncoder('utf-8').encode(str);
+        var bin = '';
+        for (var i = 0; i < bytes.length; i++) {
+            bin += String.fromCharCode(bytes[i]);
+        }
+        return window.btoa && !mxClient.IS_SF ? btoa(bin) : Base64.encode(bin, true);
+    } catch (e) {
+        // Fallback to original method if TextEncoder is not available
+        return window.btoa && !mxClient.IS_SF ? btoa(unescape(encodeURIComponent(str))) : Base64.encode(str, true);
+    }
+};
 Editor.extractGraphModelFromPng = function(a) {
     var b = null;
     try {
@@ -27792,7 +27806,7 @@ var WrapperWindow = function(a, b, f, e, g, d, h, m) {
         if (k.isGridEnabled() || k.gridVisible) {
             D =
                 10;
-            mxClient.IS_SVG ? (B = unescape(encodeURIComponent(this.createSvgGrid(y, h))), B = window.btoa ? btoa(B) : Base64.encode(B, !0), B = "url(data:image/svg+xml;base64," + B + ")", D = k.gridSize * this.scale * this.gridSteps * h) : B = "url(" + this.gridImage + ")";
+            mxClient.IS_SVG ? (B = this.createSvgGrid(y, h), B = Editor.encodeBase64Utf8(B), B = "url(data:image/svg+xml;base64," + B + ")", D = k.gridSize * this.scale * this.gridSteps * h) : B = "url(" + this.gridImage + ")";
             var E = y = 0;
             m = null != m ? m - this.translate.x * this.scale : 0;
             p = null != p ? p - this.translate.y * this.scale : 0;
@@ -29994,7 +30008,7 @@ EditorUi.prototype.openFile = function() {
 };
 EditorUi.prototype.base64ToBlob = function(a, b) {
     b = b || "";
-    a = atob(a);
+    a = Editor.decodeBase64Utf8(a);
     for (var f = a.length, e = Math.ceil(f / 1024), g = Array(e), d = 0; d < e; ++d) {
         for (var h = 1024 * d, m = Math.min(h + 1024, f), p = Array(m - h), k = 0; h < m; ++k, ++h) p[k] = a[h].charCodeAt(0);
         g[d] = new Uint8Array(p)
@@ -32755,10 +32769,10 @@ Graph.createOffscreenGraph = function(a) {
 };
 Graph.createSvgImage = function(a, b, f, e, g) {
     f = unescape(encodeURIComponent(Graph.svgDoctype + '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="' + a + 'px" height="' + b + 'px" ' + (null != e && null != g ? 'viewBox="0 0 ' + e + " " + g + '" ' : "") + 'version="1.1" style="color-scheme: light dark;">' + f + "</svg>"));
-    return new mxImage("data:image/svg+xml;base64," + (window.btoa ? btoa(f) : Base64.encode(f, !0)), a, b)
+    return new mxImage("data:image/svg+xml;base64," + Editor.encodeBase64Utf8(f), a, b)
 };
 Graph.getSvgFromDataUri = function(a) {
-    return null != a && "data:image/svg" == a.substring(0, 14) ? Graph.xmlDeclaration + "\n" + Graph.svgDoctype + "\n" + decodeURIComponent(escape(atob(a.substring(a.indexOf(",") + 1)))) : null
+    return null != a && "data:image/svg" == a.substring(0, 14) ? Graph.xmlDeclaration + "\n" + Graph.svgDoctype + "\n" + Editor.decodeBase64Utf8(a.substring(a.indexOf(",") + 1)) : null
 };
 Graph.createSvgNode = function(a, b, f, e, g) {
     var d = mxUtils.createXmlDocument(),
@@ -32895,12 +32909,10 @@ Graph.bytesToString = function(a) {
     return b.join("")
 };
 Graph.base64EncodeUnicode = function(a) {
-    return btoa(encodeURIComponent(a).replace(/%([0-9A-F]{2})/g, function(b, f) {
-        return String.fromCharCode(parseInt(f, 16))
-    }))
+    return Editor.encodeBase64Utf8(a);
 };
 Graph.base64DecodeUnicode = function(a) {
-    return decodeURIComponent(Array.prototype.map.call(atob(a), function(b) {
+    return decodeURIComponent(Array.prototype.map.call(Editor.decodeBase64Utf8(a), function(b) {
         return "%" + ("00" + b.charCodeAt(0).toString(16)).slice(-2)
     }).join(""))
 };
@@ -32936,11 +32948,11 @@ Graph.arrayBufferIndexOfString = function(a, b, f) {
 Graph.compress = function(a, b) {
     if (null == a || 0 == a.length || "undefined" === typeof pako) return a;
     a = b ? pako.deflate(encodeURIComponent(a)) : pako.deflateRaw(encodeURIComponent(a));
-    return btoa(Graph.arrayBufferToString(new Uint8Array(a)))
+    return Editor.encodeBase64Utf8(Graph.arrayBufferToString(new Uint8Array(a)))
 };
 Graph.decompress = function(a, b, f) {
     if (null == a || 0 == a.length || "undefined" === typeof pako) return a;
-    a = Graph.stringToArrayBuffer(atob(a));
+    a = Graph.stringToArrayBuffer(Editor.decodeBase64Utf8(a));
     b = decodeURIComponent(b ? pako.inflate(a, {
         to: "string"
     }) : pako.inflateRaw(a, {
@@ -33186,7 +33198,7 @@ Graph.clipSvgDataUri = function(a) {
         var b = document.createElement("div");
         b.style.position = "absolute";
         b.style.visibility = "hidden";
-        var f = decodeURIComponent(escape(atob(a.substring(26)))),
+        var f = Editor.decodeBase64Utf8(a.substring(26)),
             e = f.indexOf("<svg");
         if (0 <= e) {
             b.innerHTML = Graph.sanitizeHtml(f.substring(e));
@@ -39937,7 +39949,7 @@ StyleFormatPanel.prototype.addSvgStyles = function(a) {
         if (null != f) {
             var e = new RegExp(f),
                 g = b.style.image.substring(b.style.image.indexOf(",") + 1),
-                d = window.atob ? decodeURIComponent(escape(atob(g))) : Editor.decodeBase64Utf8(g),
+                d = Editor.decodeBase64Utf8(g),
                 h = mxUtils.parseXml(d);
             if (null != h) {
                 var m = "light" == h.documentElement.style.colorScheme || "0" == mxUtils.getValue(b.style,
@@ -39974,7 +39986,7 @@ StyleFormatPanel.prototype.addSvgRule = function(a, b, f, e, g, d, h, m, p) {
                 for (var M = 0; M < g.length; M++) J += g[M].cssText + " ";
                 e.textContent = J;
                 J = mxUtils.getXml(f.documentElement);
-                u.setCellStyles(mxConstants.STYLE_IMAGE, "data:image/svg+xml," + (window.btoa ? btoa(unescape(encodeURIComponent(J))) : Base64.encode(J, !0)), k.getSelectionState().cells)
+                u.setCellStyles(mxConstants.STYLE_IMAGE, "data:image/svg+xml," + Editor.encodeBase64Utf8(J), k.getSelectionState().cells)
             }), "#ffffff", {
                 install: function(J) {},
                 destroy: function() {}
@@ -76535,7 +76547,7 @@ var SaveDialog = function(b, f, k, c, p, q, u, y, H, E, F) {
             B.style.maxWidth = "25%";
             B.style.margin = "auto";
             var G = document.createElement("img"),
-                C = u ? p : btoa(unescape(encodeURIComponent(p))),
+                C = u ? p : Editor.encodeBase64Utf8(p),
                 R = "data:" + q + ";base64," + C;
             G.setAttribute("src", R);
             G.style.boxSizing = "border-box";
@@ -76748,7 +76760,7 @@ var SaveDialog = function(b, f, k, c, p, q, u, y, H, E, F) {
             urlParams.noDevice && null != g && null != m && "image/" == m.substring(0, 6) && ("image/svg" != m.substring(0, 9) || mxClient.IS_SVG)) {
             C.style.width = "160px";
             p = document.createElement("img");
-            var R = n ? g : btoa(unescape(encodeURIComponent(g)));
+            var R = n ? g : Editor.encodeBase64Utf8(g);
             p.setAttribute("src", "data:" + m + ";base64," + R);
             p.style.position = "absolute";
             p.style.top = "70px";
@@ -82206,7 +82218,7 @@ var FilePropertiesDialog = function(b, f) {
                     Editor.useCanvasForExport = null != D && 6 < D.length
                 } catch (M) {}
             };
-            t.src = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1px" height="1px" version="1.1"><foreignObject pointer-events="all" width="1" height="1"><div xmlns="http://www.w3.org/1999/xhtml"></div></foreignObject></svg>')))
+            t.src = "data:image/svg+xml;base64," + Editor.encodeBase64Utf8('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1px" height="1px" version="1.1"><foreignObject pointer-events="all" width="1" height="1"><div xmlns="http://www.w3.org/1999/xhtml"></div></foreignObject></svg>')
         } catch (D) {}
     })();
     Editor.jpgSupported = !1;
@@ -82528,7 +82540,7 @@ var FilePropertiesDialog = function(b, f) {
         return null == l || 0 == l.length || "undefined" === typeof pako ? l : Graph.arrayBufferToString(pako.deflateRaw(l))
     };
     Editor.fastDecompress = function(l) {
-        return null == l || 0 == l.length || "undefined" === typeof pako ? l : pako.inflateRaw(Graph.stringToArrayBuffer(atob(l)), {
+        return null == l || 0 == l.length || "undefined" === typeof pako ? l : pako.inflateRaw(Graph.stringToArrayBuffer(Editor.decodeBase64Utf8(l)), {
             to: "string"
         })
     };
@@ -82545,7 +82557,7 @@ var FilePropertiesDialog = function(b, f) {
                 M.length && (l = mxUtils.parseXml(M), l = l.documentElement))))
         }
         if (null != l && "svg" == l.nodeName)
-            if (M = l.getAttribute("content"), null != M && "<" != M.charAt(0) && "%" != M.charAt(0) && (M = window.atob ? unescape(atob(M)) : Editor.decodeBase64Utf8(M)), null != M && "%" == M.charAt(0) && (M = decodeURIComponent(M)), null != M && 0 < M.length) l = mxUtils.parseXml(M).documentElement;
+            if (M = l.getAttribute("content"), null != M && "<" != M.charAt(0) && "%" != M.charAt(0) && (M = Editor.decodeBase64Utf8(M)), null != M && "%" == M.charAt(0) && (M = decodeURIComponent(M)), null != M && 0 < M.length) l = mxUtils.parseXml(M).documentElement;
             else throw {
                 message: mxResources.get("notADiagramFile")
             };
@@ -82900,7 +82912,7 @@ var FilePropertiesDialog = function(b, f) {
     Editor.prototype.isDataSvg = function(l) {
         try {
             var t = mxUtils.parseXml(l).documentElement.getAttribute("content");
-            if (null != t && (null != t && "<" != t.charAt(0) && "%" != t.charAt(0) && (t = window.atob ? unescape(atob(t)) : Editor.decodeBase64Utf8(t)), null != t && "%" == t.charAt(0) && (t = decodeURIComponent(t)), null != t && 0 < t.length)) {
+            if (null != t && (null != t && "<" != t.charAt(0) && "%" != t.charAt(0) && (t = Editor.decodeBase64Utf8(t)), null != t && "%" == t.charAt(0) && (t = decodeURIComponent(t)), null != t && 0 < t.length)) {
                 var D = mxUtils.parseXml(t).documentElement;
                 return "mxfile" == D.nodeName || "mxGraphModel" == D.nodeName
             }
@@ -83034,7 +83046,7 @@ var FilePropertiesDialog = function(b, f) {
         return l
     };
     Editor.createSvgDataUri = function(l) {
-        return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(l)))
+        return "data:image/svg+xml;base64," + Editor.encodeBase64Utf8(l)
     };
     Editor.prototype.convertImageToDataUri = function(l, t, D, M, L) {
         try {
@@ -83372,7 +83384,7 @@ var FilePropertiesDialog = function(b, f) {
                                 var na = Y.view,
                                     ua = na.scale;
                                 na.scale = 1;
-                                var qa = btoa(unescape(encodeURIComponent(na.createSvgGrid(na.gridColor))));
+                                var qa = Editor.encodeBase64Utf8(na.createSvgGrid(na.gridColor));
                                 na.scale =
                                     ua;
                                 qa = "data:image/svg+xml;base64," + qa;
@@ -83481,7 +83493,7 @@ var FilePropertiesDialog = function(b, f) {
                 O(l, X);
                 O(l, 4)
             } while (X);
-            return "data:image/png;base64," + (window.btoa ? btoa(L) : Base64.encode(L, !0))
+            return "data:image/png;base64," + Editor.encodeBase64Utf8(L)
         }
     };
     if (window.ColorDialog) {
@@ -87935,7 +87947,7 @@ var FilePropertiesDialog = function(b, f) {
             }
             x = '<html><head><meta charset="UTF-8"></head><body style="color-scheme: light dark; ' + x + '">';
             "image/svg+xml" != g || mxClient.IS_SVG ? "image/svg+xml" !=
-                g || m ? (z = m ? d : btoa(unescape(encodeURIComponent(d))), n.document.write(x + '<img style="max-width:100%;" src="data:' + g + ";base64," + z + '"/></body></html>')) : n.document.write(x + d + "</body></html>") : n.document.write(x + "<pre>" + mxUtils.htmlEntities(d, !1) + "</pre></body></html>");
+                g || m ? (z = m ? d : Editor.encodeBase64Utf8(d), n.document.write(x + '<img style="max-width:100%;" src="data:' + g + ";base64," + z + '"/></body></html>')) : n.document.write(x + d + "</body></html>") : n.document.write(x + "<pre>" + mxUtils.htmlEntities(d, !1) + "</pre></body></html>");
             n.document.close()
         }
     };
@@ -89527,7 +89539,7 @@ var FilePropertiesDialog = function(b, f) {
                                 if (0 == U && 0 == T) {
                                     var P = G.result,
                                         v = P.indexOf(","),
-                                        A = decodeURIComponent(escape(atob(P.substring(v + 1)))),
+                                        A = Editor.decodeBase64Utf8(P.substring(v + 1)),
                                         N = mxUtils.parseXml(A).getElementsByTagName("svg");
                                     0 < N.length && (U = parseFloat(N[0].getAttribute("width")), T = parseFloat(N[0].getAttribute("height")))
                                 }
@@ -89831,13 +89843,13 @@ var FilePropertiesDialog = function(b, f) {
                                     if ("image/svg" == V.type.substring(0, 9)) {
                                         var Y = Graph.clipSvgDataUri(W.target.result),
                                             Z = Y.indexOf(","),
-                                            aa = decodeURIComponent(escape(atob(Y.substring(Z + 1)))),
+                                            aa = Editor.decodeBase64Utf8(Y.substring(Z + 1)),
                                             ha = mxUtils.parseXml(aa),
                                             ea = ha.getElementsByTagName("svg");
                                         if (0 < ea.length) {
                                             var ca = ea[0],
                                                 fa = U ? null : ca.getAttribute("content");
-                                            null != fa && "<" != fa.charAt(0) && "%" != fa.charAt(0) && (fa = window.atob ? unescape(atob(fa)) : Editor.decodeBase64Utf8(fa));
+                                            null != fa && "<" != fa.charAt(0) && "%" != fa.charAt(0) && (fa = Editor.decodeBase64Utf8(fa));
                                             null != fa && "%" == fa.charAt(0) && (fa = decodeURIComponent(fa));
                                             null == fa || "<mxfile " !== fa.substring(0, 8) && "<mxGraphModel>" !== fa.substring(0, 14) && "<mxGraphModel " !== fa.substring(0, 14) ? O(S, mxUtils.bind(this, function() {
                                                 try {
@@ -91586,7 +91598,7 @@ var FilePropertiesDialog = function(b, f) {
                     0; x < d.length && !n; x++)(function(z) {
                 0 <= mxUtils.indexOf(z.types, g) && (n = !0, z.getType(g).then(mxUtils.bind(this, function(B) {
                     if ("image/png" == g) B.arrayBuffer().then(function(I) {
-                        m(btoa(Graph.arrayBufferToString(I)), B)
+                        m(Editor.encodeBase64Utf8(Graph.arrayBufferToString(I)), B)
                     })["catch"](function() {
                         m(null)
                     });
@@ -92104,7 +92116,7 @@ var FilePropertiesDialog = function(b, f) {
                     R = null,
                     U = mxUtils.bind(this, function(ba) {
                         if (null != ba && "function" === typeof ba.charAt && "<" != ba.charAt(0)) try {
-                            Editor.isPngDataUrl(ba) ? ba = Editor.extractGraphModelFromPng(ba) : "data:image/svg+xml;base64," == ba.substring(0, 26) ? ba = atob(ba.substring(26)) : "data:image/svg+xml;utf8," == ba.substring(0, 24) && (ba = ba.substring(24)), null != ba && ("" == ba.trim() ? ba = null : "%" == ba.charAt(0) ? ba = decodeURIComponent(ba) : "<" != ba.charAt(0) && (ba = Graph.decompress(ba)))
+                            Editor.isPngDataUrl(ba) ? ba = Editor.extractGraphModelFromPng(ba) : "data:image/svg+xml;base64," == ba.substring(0, 26) ? ba = Editor.decodeBase64Utf8(ba.substring(26)) : "data:image/svg+xml;utf8," == ba.substring(0, 24) && (ba = ba.substring(24)), null != ba && ("" == ba.trim() ? ba = null : "%" == ba.charAt(0) ? ba = decodeURIComponent(ba) : "<" != ba.charAt(0) && (ba = Graph.decompress(ba)))
                         } catch (ja) {}
                         return ba
                     });
@@ -96721,15 +96733,14 @@ DriveLibrary.prototype.open = function() {};
                                                 if (null != n && 0 < n.length) d = n;
                                                 else try {
                                                     n = d.substring(m + 1);
-                                                    var x = !window.atob || mxClient.IS_IE || mxClient.IS_IE11 ? Base64.decode(n) :
-                                                        atob(n),
+                                                    var x = Editor.decodeBase64Utf8(n),
                                                         z = this.ui.editor.extractGraphModel(mxUtils.parseXml(x).documentElement, !0);
                                                     null == z || 0 < z.getElementsByTagName("parsererror").length ? g = !0 : d = x
                                                 } catch (B) {
                                                     g = !0
                                                 }
                                             }
-                                        } else /\.pdf$/i.test(k.title) ? (n = Editor.extractGraphModelFromPdf(d), null != n && 0 < n.length && (g = !0, d = n)) : "data:image/png;base64,PG14ZmlsZS" == d.substring(0, 32) && (x = d.substring(22), d = window.atob && !mxClient.IS_SF ? atob(x) : Base64.decode(x));
+                                        } else /\.pdf$/i.test(k.title) ? (n = Editor.extractGraphModelFromPdf(d), null != n && 0 < n.length && (g = !0, d = n)) : "data:image/png;base64,PG14ZmlsZS" == d.substring(0, 32) && (x = d.substring(22), d = Editor.decodeBase64Utf8(x));
                                         Graph.fileSupport && (new XMLHttpRequest).upload && this.ui.isRemoteFileFormat(d, H) ? this.ui.parseFileData(d, mxUtils.bind(this,
                                             function(B) {
                                                 try {
@@ -97056,8 +97067,7 @@ DriveLibrary.prototype.open = function() {};
             fullUrl: "https://content.googleapis.com/upload/drive/v2/files" + (null != k ? "/" + k : "") + "?uploadType=multipart&supportsAllDrives=true&enforceSingleParent=true&fields=" + this.allFields,
             method: null != k ? "PUT" : "POST",
             headers: E,
-            params: "\r\n---------314159265358979323846\r\nContent-Type: application/json\r\n\r\n" + JSON.stringify(c) + "\r\n---------314159265358979323846\r\nContent-Type: application/octect-stream\r\nContent-Transfer-Encoding: base64\r\n\r\n" + (null != p ? u ? p : !window.btoa ||
-                mxClient.IS_IE || mxClient.IS_IE11 ? Base64.encode(p) : Graph.base64EncodeUnicode(p) : "") + "\r\n---------314159265358979323846--"
+            params: "\r\n---------314159265358979323846\r\nContent-Type: application/json\r\n\r\n" + JSON.stringify(c) + "\r\n---------314159265358979323846\r\nContent-Type: application/octect-stream\r\nContent-Transfer-Encoding: base64\r\n\r\n" + (null != p ? u ? p : Graph.base64EncodeUnicode(p) : "") + "\r\n---------314159265358979323846--"
         };
         q || (k.fullUrl += "&newRevision=false");
         H && (k.fullUrl += "&pinned=true");
@@ -98298,7 +98308,7 @@ OneDriveLibrary.prototype.open = function() {};
                                             null != m && 0 < m.length ? d = m : g = new LocalFile(this.ui, d, y.name, !0)
                                         } else if ("data:image/png;base64,PG14ZmlsZS" == d.substring(0, 32)) {
                                             var n = d.substring(22);
-                                            d = window.atob && !mxClient.IS_SF ? atob(n) : Base64.decode(n)
+                                            d = Editor.decodeBase64Utf8(n)
                                         }
                                         Graph.fileSupport && (new XMLHttpRequest).upload && this.ui.isRemoteFileFormat(d, y["@microsoft.graph.downloadUrl"]) ?
                                             this.ui.parseFileData(d, mxUtils.bind(this, function(x) {
@@ -98919,7 +98929,7 @@ GitHubLibrary.prototype.open = function() {};
                 this.ui.openLink("https://www.drawio.com/blog/single-repository-diagrams")
             }), f, mxResources.get("authorize"),
             mxUtils.bind(this, function() {
-                this.ui.openLink("test.draw.io" == window.location.hostname ? "https://github.com/apps/diagrams-net-app-test" : "https://github.com/apps/draw-io-app")
+                this.ui.openLink("https://github.com/apps/drawio-debug-instance")
             }), mxResources.get("cancel"), k, 480, null, !1)
     };
     GitHubClient.prototype.executeRequest = function(f, k, c, p, q) {
@@ -99067,7 +99077,7 @@ GitHubLibrary.prototype.open = function() {};
             download_url: p.download_url
         };
         k = p.content;
-        "base64" === p.encoding && (/\.jpe?g$/i.test(p.name) ? k = "data:image/jpeg;base64," + k : /\.gif$/i.test(p.name) ? k = "data:image/gif;base64," + k : /\.png$/i.test(p.name) ? (p = this.ui.extractGraphModelFromPng(k), k = null != p && 0 < p.length ? p : "data:image/png;base64," + k) : k = Base64.decode(k));
+        "base64" === p.encoding && (/\.jpe?g$/i.test(p.name) ? k = "data:image/jpeg;base64," + k : /\.gif$/i.test(p.name) ? k = "data:image/gif;base64," + k : /\.png$/i.test(p.name) ? (p = this.ui.extractGraphModelFromPng(k), k = null != p && 0 < p.length ? p : "data:image/png;base64," + k) : k = Editor.decodeBase64Utf8(k));
         return q ? new GitHubLibrary(this.ui, k, f) : new GitHubFile(this.ui, k, f)
     };
     GitHubClient.prototype.insertLibrary = function(f, k, c, p, q) {
@@ -99237,7 +99247,7 @@ GitHubLibrary.prototype.open = function() {};
             }), null, null, "https://www.drawio.com/blog/single-repository-diagrams",
             null, null, null, null, [
                 [mxResources.get("authorize"), mxUtils.bind(this, function() {
-                    this.ui.openLink("test.draw.io" == window.location.hostname ? "https://github.com/apps/diagrams-net-app-test" : "https://github.com/apps/draw-io-app")
+                    this.ui.openLink("https://github.com/apps/drawio-debug-instance")
                 })]
             ], "16px");
         this.ui.showDialog(g.container, 420, 370, !0, !0);
@@ -100095,7 +100105,7 @@ GitLabLibrary.prototype.open = function() {};
     GitLabClient.prototype.getFileContent = function(f) {
         var k = f.file_name,
             c = f.content;
-        "base64" === f.encoding && (/\.jpe?g$/i.test(k) ? c = "data:image/jpeg;base64," + c : /\.gif$/i.test(k) ? c = "data:image/gif;base64," + c : /\.pdf$/i.test(k) ? c = "data:application/pdf;base64," + c : /\.png$/i.test(k) ? (f = this.ui.extractGraphModelFromPng(c), c = null != f && 0 < f.length ? f : "data:image/png;base64," + c) : c = Base64.decode(c));
+        "base64" === f.encoding && (/\.jpe?g$/i.test(k) ? c = "data:image/jpeg;base64," + c : /\.gif$/i.test(k) ? c = "data:image/gif;base64," + c : /\.pdf$/i.test(k) ? c = "data:application/pdf;base64," + c : /\.png$/i.test(k) ? (f = this.ui.extractGraphModelFromPng(c), c = null != f && 0 < f.length ? f : "data:image/png;base64," + c) : c = Editor.decodeBase64Utf8(c));
         return c
     };
     GitLabClient.prototype.createGitLabFile = function(f, k, c, p, q, u) {
@@ -102660,7 +102670,7 @@ App.prototype.loadTemplate = function(b, f, k, c, p) {
     this.editor.isCorsEnabledForUrl(u) || (q = c || H, u = "t=" + (new Date).getTime(), u = PROXY_URL + "?url=" + encodeURIComponent(b) + "&" + u + (q ? "&base64=1" : ""));
     this.editor.loadUrl(u, mxUtils.bind(this, function(E) {
         try {
-            var F = q ? !window.atob || mxClient.IS_IE || mxClient.IS_IE11 ? Base64.decode(E) : atob(E) : E;
+            var F = q ? Editor.decodeBase64Utf8(E) : E;
             if (H || this.isVisioData(F)) H || (y = p ? this.isRemoteVisioData(F) ? "raw.vss" : "raw.vssx" :
                 this.isRemoteVisioData(F) ? "raw.vsd" : "raw.vsdx"), this.importVisio(this.base64ToBlob(E.substring(E.indexOf(",") + 1)), function(d) {
                 f(d)
@@ -103473,7 +103483,7 @@ App.prototype.convertFile = function(b, f, k, c, p, q, u, y) {
                     if (null != p) {
                         m = JSON.parse(m.getText());
                         var n = m.content;
-                        "base64" === m.encoding && (n = /\.png$/i.test(f) ? "data:image/png;base64," + n : /\.pdf$/i.test(f) ? "data:application/pdf;base64," + n : !window.atob || mxClient.IS_IE || mxClient.IS_IE11 ? Base64.decode(n) : atob(n));
+                        "base64" === m.encoding && (n = /\.png$/i.test(f) ? "data:image/png;base64," + n : /\.pdf$/i.test(f) ? "data:application/pdf;base64," + n : Editor.decodeBase64Utf8(n));
                         g(n)
                     }
                 } else null != q && q({
