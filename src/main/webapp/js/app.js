@@ -26711,11 +26711,25 @@ Editor.convertHtmlToText = function(a) {
     }
     return null
 };
+Editor.decodeBase64Utf8 = function(b64) {
+    try {
+        // Proper UTF-8 decoding from Base64
+        var bin = window.atob && !mxClient.IS_SF ? atob(b64) : Base64.decode(b64, true);
+        var bytes = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) {
+            bytes[i] = bin.charCodeAt(i);
+        }
+        return new TextDecoder('utf-8').decode(bytes);
+    } catch (e) {
+        // Fallback to original method if TextDecoder is not available
+        return window.atob && !mxClient.IS_SF ? atob(b64) : Base64.decode(b64, true);
+    }
+};
 Editor.extractGraphModelFromPng = function(a) {
     var b = null;
     try {
         var f = a.substring(a.indexOf(",") + 1),
-            e = window.atob && !mxClient.IS_SF ? atob(f) : Base64.decode(f, !0);
+            e = Editor.decodeBase64Utf8(f);
         EditorUi.parsePng(e, mxUtils.bind(this, function(g, d, h) {
             g = e.substring(g + 8, g + 8 + h);
             "zTXt" == d ? (h = g.indexOf(String.fromCharCode(0)), "mxGraphModel" == g.substring(0, h) && (g = pako.inflateRaw(Graph.stringToArrayBuffer(g.substring(h + 2)), {
@@ -39923,7 +39937,7 @@ StyleFormatPanel.prototype.addSvgStyles = function(a) {
         if (null != f) {
             var e = new RegExp(f),
                 g = b.style.image.substring(b.style.image.indexOf(",") + 1),
-                d = window.atob ? decodeURIComponent(escape(atob(g))) : Base64.decode(g, !0),
+                d = window.atob ? decodeURIComponent(escape(atob(g))) : Editor.decodeBase64Utf8(g),
                 h = mxUtils.parseXml(d);
             if (null != h) {
                 var m = "light" == h.documentElement.style.colorScheme || "0" == mxUtils.getValue(b.style,
@@ -82531,7 +82545,7 @@ var FilePropertiesDialog = function(b, f) {
                 M.length && (l = mxUtils.parseXml(M), l = l.documentElement))))
         }
         if (null != l && "svg" == l.nodeName)
-            if (M = l.getAttribute("content"), null != M && "<" != M.charAt(0) && "%" != M.charAt(0) && (M = unescape(window.atob ? atob(M) : Base64.decode(cont, M))), null != M && "%" == M.charAt(0) && (M = decodeURIComponent(M)), null != M && 0 < M.length) l = mxUtils.parseXml(M).documentElement;
+            if (M = l.getAttribute("content"), null != M && "<" != M.charAt(0) && "%" != M.charAt(0) && (M = window.atob ? unescape(atob(M)) : Editor.decodeBase64Utf8(M)), null != M && "%" == M.charAt(0) && (M = decodeURIComponent(M)), null != M && 0 < M.length) l = mxUtils.parseXml(M).documentElement;
             else throw {
                 message: mxResources.get("notADiagramFile")
             };
@@ -82566,7 +82580,7 @@ var FilePropertiesDialog = function(b, f) {
     Editor.extractGraphModelFromPdf = function(l) {
         var t = null;
         l = l.substring(l.indexOf(",") + 1);
-        l = window.atob && !mxClient.IS_SF ? atob(l) : Base64.decode(l, !0);
+        l = Editor.decodeBase64Utf8(l);
         if ("%PDF-1.7" == l.substring(0, 8)) {
             var D = l.indexOf("EmbeddedFile");
             if (-1 < D) {
@@ -82886,7 +82900,7 @@ var FilePropertiesDialog = function(b, f) {
     Editor.prototype.isDataSvg = function(l) {
         try {
             var t = mxUtils.parseXml(l).documentElement.getAttribute("content");
-            if (null != t && (null != t && "<" != t.charAt(0) && "%" != t.charAt(0) && (t = unescape(window.atob ? atob(t) : Base64.decode(cont, t))), null != t && "%" == t.charAt(0) && (t = decodeURIComponent(t)), null != t && 0 < t.length)) {
+            if (null != t && (null != t && "<" != t.charAt(0) && "%" != t.charAt(0) && (t = window.atob ? unescape(atob(t)) : Editor.decodeBase64Utf8(t)), null != t && "%" == t.charAt(0) && (t = decodeURIComponent(t)), null != t && 0 < t.length)) {
                 var D = mxUtils.parseXml(t).documentElement;
                 return "mxfile" == D.nodeName || "mxGraphModel" == D.nodeName
             }
@@ -83443,7 +83457,7 @@ var FilePropertiesDialog = function(b, f) {
             return String.fromCharCode(W >> 24 & 255, W >> 16 & 255, W >> 8 & 255, W & 255)
         }
         l = l.substring(l.indexOf(",") + 1);
-        l = window.atob ? atob(l) : Base64.decode(l, !0);
+        l = Editor.decodeBase64Utf8(l);
         var V = 0;
         if (O(l, 8) != String.fromCharCode(137) + "PNG" + String.fromCharCode(13, 10, 26, 10)) null != L && L();
         else if (O(l, 4), "IHDR" != O(l, 4)) null != L && L();
@@ -89565,7 +89579,7 @@ var FilePropertiesDialog = function(b, f) {
                 !0, I);
             if ("data:image/svg+xml;" == d.substring(0, 19)) try {
                 C = null;
-                "data:image/svg+xml;base64," == d.substring(0, 26) ? (C = d.substring(d.indexOf(",") + 1), C = window.atob && !mxClient.IS_SF ? atob(C) : Base64.decode(C, !0)) : C = decodeURIComponent(d.substring(d.indexOf(",") + 1));
+                "data:image/svg+xml;base64," == d.substring(0, 26) ? (C = d.substring(d.indexOf(",") + 1), C = Editor.decodeBase64Utf8(C)) : C = decodeURIComponent(d.substring(d.indexOf(",") + 1));
                 var R = this.importXml(C, g, m, z, !0, I);
                 if (0 < R.length) return R
             } catch (T) {}
@@ -89823,7 +89837,7 @@ var FilePropertiesDialog = function(b, f) {
                                         if (0 < ea.length) {
                                             var ca = ea[0],
                                                 fa = U ? null : ca.getAttribute("content");
-                                            null != fa && "<" != fa.charAt(0) && "%" != fa.charAt(0) && (fa = unescape(window.atob ? atob(fa) : Base64.decode(fa, !0)));
+                                            null != fa && "<" != fa.charAt(0) && "%" != fa.charAt(0) && (fa = window.atob ? unescape(atob(fa)) : Editor.decodeBase64Utf8(fa));
                                             null != fa && "%" == fa.charAt(0) && (fa = decodeURIComponent(fa));
                                             null == fa || "<mxfile " !== fa.substring(0, 8) && "<mxGraphModel>" !== fa.substring(0, 14) && "<mxGraphModel " !== fa.substring(0, 14) ? O(S, mxUtils.bind(this, function() {
                                                 try {
