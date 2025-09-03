@@ -1,0 +1,17 @@
+# mxKeyHandler Methods
+
+- mxKeyHandler.isEnabled()
+- mxKeyHandler.setEnabled(a)
+- mxKeyHandler.bindKey(a, b)
+- mxKeyHandler.bindShiftKey(a, b)
+- mxKeyHandler.bindControlKey(a, b)
+- mxKeyHandler.bindControlShiftKey(a, b)
+- mxKeyHandler.isControlDown(a)
+- mxKeyHandler.getFunction(a)
+- mxKeyHandler.isGraphEvent(a)
+- mxKeyHandler.keyDown(a)
+- mxKeyHandler.isEnabledForEvent(a)
+- mxKeyHandler.isEventIgnored(a)
+- mxKeyHandler.escape(a)
+- mxKeyHandler.destroy()
+- mxKeyHandler.getFunction(w)

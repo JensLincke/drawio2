@@ -1,0 +1,16 @@
+# mxHierarchicalLayout Methods
+
+- mxHierarchicalLayout.getModel()
+- mxHierarchicalLayout.execute(a, b)
+- mxHierarchicalLayout.findRoots(a, b)
+- mxHierarchicalLayout.getEdges(a)
+- mxHierarchicalLayout.getVisibleTerminal(a, b)
+- mxHierarchicalLayout.run(a)
+- mxHierarchicalLayout.filterDescendants(a, b)
+- mxHierarchicalLayout.isPort(a)
+- mxHierarchicalLayout.getEdgesBetween(a, b, c)
+- mxHierarchicalLayout.traverse(a, b, c, d, e, f, g)
+- mxHierarchicalLayout.cycleStage(a)
+- mxHierarchicalLayout.layeringStage()
+- mxHierarchicalLayout.crossingStage(a)
+- mxHierarchicalLayout.placementStage(a, b)

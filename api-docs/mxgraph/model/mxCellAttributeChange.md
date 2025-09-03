@@ -1,0 +1,3 @@
+# mxCellAttributeChange Methods
+
+- mxCellAttributeChange.execute()

@@ -1,0 +1,18 @@
+# StyleFormatPanel Methods
+
+- StyleFormatPanel.init()
+- StyleFormatPanel.getCssRules(a)
+- StyleFormatPanel.addSvgStyles(a)
+- StyleFormatPanel.getColorSchemeFromCss(a)
+- StyleFormatPanel.addSvgRule(a, b, f, e, g, d, h, m, p)
+- StyleFormatPanel.addEditOps(a)
+- StyleFormatPanel.addFill(a)
+- StyleFormatPanel.getCustomColors()
+- StyleFormatPanel.addStroke(a)
+- StyleFormatPanel.addLineJumps(a)
+- StyleFormatPanel.addEffects(a)
+- StyleFormatPanel.addStyleOps(a)
+- StyleFormatPanel.getCustomColors()
+- StyleFormatPanel.init()
+- StyleFormatPanel.addStyleOps(l)
+- StyleFormatPanel.addStyles(l)

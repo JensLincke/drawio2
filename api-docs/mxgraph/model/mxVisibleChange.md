@@ -1,0 +1,3 @@
+# mxVisibleChange Methods
+
+- mxVisibleChange.execute()

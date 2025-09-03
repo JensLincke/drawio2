@@ -1,0 +1,3 @@
+# RenamePage Methods
+
+- RenamePage.execute()

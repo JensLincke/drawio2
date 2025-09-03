@@ -1,0 +1,21 @@
+# mxHandle Methods
+
+- mxHandle.getPosition(a) {};
+- mxHandle.setPosition(a, b, c) {};
+- mxHandle.execute(a) {};
+- mxHandle.copyStyle(a)
+- mxHandle.processEvent(a)
+- mxHandle.positionChanged()
+- mxHandle.getRotation()
+- mxHandle.getTotalRotation()
+- mxHandle.init()
+- mxHandle.createShape(a)
+- mxHandle.initShape(a)
+- mxHandle.redraw()
+- mxHandle.isHtmlRequired()
+- mxHandle.rotatePoint(a, b)
+- mxHandle.flipPoint(a)
+- mxHandle.snapPoint(a, b)
+- mxHandle.setVisible(a)
+- mxHandle.reset()
+- mxHandle.destroy()

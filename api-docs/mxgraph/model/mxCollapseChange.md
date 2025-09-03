@@ -1,0 +1,3 @@
+# mxCollapseChange Methods
+
+- mxCollapseChange.execute()

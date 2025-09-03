@@ -1,0 +1,15 @@
+# mxCellState Methods
+
+- mxCellState.getPerimeterBounds(a, b)
+- mxCellState.setAbsoluteTerminalPoint(a, b)
+- mxCellState.setCursor(a)
+- mxCellState.isFloatingTerminalPoint(a)
+- mxCellState.getVisibleTerminal(a)
+- mxCellState.getVisibleTerminalState(a)
+- mxCellState.setVisibleTerminalState(a, b)
+- mxCellState.getCellBounds()
+- mxCellState.getPaintBounds()
+- mxCellState.updateCachedBounds()
+- mxCellState.setState(a)
+- mxCellState.clone()
+- mxCellState.destroy()

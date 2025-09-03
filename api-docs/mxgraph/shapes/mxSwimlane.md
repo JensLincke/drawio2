@@ -1,0 +1,16 @@
+# mxSwimlane Methods
+
+- mxSwimlane.apply(a)
+- mxSwimlane.isRoundable()
+- mxSwimlane.getTitleSize()
+- mxSwimlane.getLabelBounds(a)
+- mxSwimlane.getGradientBounds(a, b, c, d, e)
+- mxSwimlane.getSwimlaneArcSize(a, b, c)
+- mxSwimlane.isHorizontal()
+- mxSwimlane.paintVertexShape(a, b, c, d, e)
+- mxSwimlane.configurePointerEvents(a)
+- mxSwimlane.paintSwimlane(a, b, c, d, e, f)
+- mxSwimlane.paintRoundedSwimlane(a, b, c, d, e, f, g)
+- mxSwimlane.paintDivider(a, b, c, d, e, f, g)
+- mxSwimlane.paintSeparator(a, b, c, d, e, f, g)
+- mxSwimlane.getImageBounds(a, b, c, d)

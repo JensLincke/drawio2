@@ -1,0 +1,3 @@
+# mxTemporaryCellStates Methods
+
+- mxTemporaryCellStates.destroy()

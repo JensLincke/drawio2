@@ -1,0 +1,15 @@
+# TrelloClient Methods
+
+- TrelloClient.authenticate(b, f, k)
+- TrelloClient.getLibrary(b, f, k)
+- TrelloClient.getFile(b, f, k, c, p)
+- TrelloClient.insertLibrary(b, f, k, c, p)
+- TrelloClient.insertFile(b, f, k, c, p, q)
+- TrelloClient.saveFile(b, f, k)
+- TrelloClient.writeFile(b, f, k, c, p)
+- TrelloClient.pickLibrary(b)
+- TrelloClient.pickFolder(b)
+- TrelloClient.pickFile(b, f)
+- TrelloClient.showTrelloDialog(b, f)
+- TrelloClient.isAuthorized()
+- TrelloClient.logout()

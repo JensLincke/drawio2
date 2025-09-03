@@ -1,0 +1,3 @@
+# mxSelectionChange Methods
+
+- mxSelectionChange.execute()

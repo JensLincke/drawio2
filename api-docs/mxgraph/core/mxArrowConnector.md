@@ -1,0 +1,15 @@
+# mxArrowConnector Methods
+
+- mxArrowConnector.isRoundable()
+- mxArrowConnector.resetStyles()
+- mxArrowConnector.apply(a)
+- mxArrowConnector.augmentBoundingBox(a)
+- mxArrowConnector.paintEdgeShape(a, b)
+- mxArrowConnector.paintMarker(a, b, c, d, e, f, g, k, l, m)
+- mxArrowConnector.isArrowRounded()
+- mxArrowConnector.getStartArrowWidth()
+- mxArrowConnector.getEndArrowWidth()
+- mxArrowConnector.getEdgeWidth()
+- mxArrowConnector.isOpenEnded()
+- mxArrowConnector.isMarkerStart()
+- mxArrowConnector.isMarkerEnd()

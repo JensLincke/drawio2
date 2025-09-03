@@ -1,0 +1,15 @@
+# mxStencil Methods
+
+- mxStencil.parseDescription()
+- mxStencil.parseConstraints()
+- mxStencil.parseConstraint(a)
+- mxStencil.evaluateTextAttribute(a, b, c)
+- mxStencil.evaluateAttribute(a, b, c)
+- mxStencil.drawShape(a, b, c, d, e, f, g)
+- mxStencil.drawChildren(a, b, c, d, e, f, g, k, l, m, n)
+- mxStencil.computeAspect(a, b, c, d, e, f)
+- mxStencil.parseColor(a, b, c, d, e)
+- mxStencil.drawNode(a, b, c, d, e, f, g)
+- mxStencil.parseColor(b, f, e, g, d)
+- mxStencil.evaluateTextAttribute(w, y, B)
+- mxStencil.drawShape(l, t, D, M, L, O)

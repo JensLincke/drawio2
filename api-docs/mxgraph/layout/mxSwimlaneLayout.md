@@ -1,0 +1,17 @@
+# mxSwimlaneLayout Methods
+
+- mxSwimlaneLayout.getModel()
+- mxSwimlaneLayout.execute(a, b)
+- mxSwimlaneLayout.updateGroupBounds()
+- mxSwimlaneLayout.findRoots(a, b)
+- mxSwimlaneLayout.getEdges(a)
+- mxSwimlaneLayout.getVisibleTerminal(a, b)
+- mxSwimlaneLayout.run(a)
+- mxSwimlaneLayout.filterDescendants(a, b)
+- mxSwimlaneLayout.isPort(a)
+- mxSwimlaneLayout.getEdgesBetween(a, b, c)
+- mxSwimlaneLayout.traverse(a, b, c, d, e, f, g, k)
+- mxSwimlaneLayout.cycleStage(a)
+- mxSwimlaneLayout.layeringStage()
+- mxSwimlaneLayout.crossingStage(a)
+- mxSwimlaneLayout.placementStage(a, b)

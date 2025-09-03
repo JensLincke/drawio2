@@ -1,0 +1,16 @@
+# mxSelectionCellsHandler Methods
+
+- mxSelectionCellsHandler.isEnabled()
+- mxSelectionCellsHandler.setEnabled(a)
+- mxSelectionCellsHandler.getHandler(a)
+- mxSelectionCellsHandler.isHandled(a)
+- mxSelectionCellsHandler.reset()
+- mxSelectionCellsHandler.getHandledSelectionCells()
+- mxSelectionCellsHandler.refresh(a)
+- mxSelectionCellsHandler.isHandlerActive(a)
+- mxSelectionCellsHandler.updateHandler(a)
+- mxSelectionCellsHandler.mouseDown(a, b)
+- mxSelectionCellsHandler.mouseMove(a, b)
+- mxSelectionCellsHandler.mouseUp(a, b)
+- mxSelectionCellsHandler.destroy()
+- mxSelectionCellsHandler.getHandledSelectionCells()

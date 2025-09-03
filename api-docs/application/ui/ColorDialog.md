@@ -1,0 +1,3 @@
+# ColorDialog Methods
+
+- ColorDialog.createApplyFunction()

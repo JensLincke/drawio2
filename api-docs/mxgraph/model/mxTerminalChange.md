@@ -1,0 +1,3 @@
+# mxTerminalChange Methods
+
+- mxTerminalChange.execute()

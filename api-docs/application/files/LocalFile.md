@@ -1,0 +1,16 @@
+# LocalFile Methods
+
+- LocalFile.isAutosave()
+- LocalFile.isAutosaveOptional()
+- LocalFile.getMode()
+- LocalFile.getTitle()
+- LocalFile.isRenamable()
+- LocalFile.isEditable()
+- LocalFile.setEditable(b)
+- LocalFile.save(b, f, k, c, p)
+- LocalFile.saveAs(b, f, k, c, p)
+- LocalFile.getDescriptor()
+- LocalFile.setDescriptor(b)
+- LocalFile.getLatestVersion(b, f)
+- LocalFile.saveFile(b, f, k, c, p, q, u)
+- LocalFile.rename(b, f, k)

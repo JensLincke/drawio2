@@ -1,0 +1,23 @@
+# mxAsyncCanvas Methods
+
+- mxAsyncCanvas.incWaitCounter()
+- mxAsyncCanvas.decWaitCounter()
+- mxAsyncCanvas.updateFont()
+- mxAsyncCanvas.rotate(b, f, k, c, p) {};
+- mxAsyncCanvas.setAlpha(b)
+- mxAsyncCanvas.setFontColor(b)
+- mxAsyncCanvas.setFontBackgroundColor(b)
+- mxAsyncCanvas.setFontBorderColor(b)
+- mxAsyncCanvas.setFontSize(b)
+- mxAsyncCanvas.setFontFamily(b)
+- mxAsyncCanvas.setFontStyle(b)
+- mxAsyncCanvas.rect(b, f, k, c) {};
+- mxAsyncCanvas.roundrect(b, f, k, c, p, q) {};
+- mxAsyncCanvas.ellipse(b, f, k, c) {};
+- mxAsyncCanvas.rewriteImageSource(b)
+- mxAsyncCanvas.image(b, f, k, c, p, q, u, y)
+- mxAsyncCanvas.fill() {};
+- mxAsyncCanvas.stroke() {};
+- mxAsyncCanvas.fillAndStroke() {};
+- mxAsyncCanvas.text(b, f, k, c, p, q, u, y, H, E, F, d)
+- mxAsyncCanvas.finish(b)

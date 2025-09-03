@@ -1,0 +1,3 @@
+# mxGeometryChange Methods
+
+- mxGeometryChange.execute()

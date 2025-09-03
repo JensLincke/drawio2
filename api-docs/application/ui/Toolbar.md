@@ -1,0 +1,16 @@
+# Toolbar Methods
+
+- Toolbar.init()
+- Toolbar.appendDropDownImageHtml(a)
+- Toolbar.addTableDropDown()
+- Toolbar.setFontName(a)
+- Toolbar.setFontSize(a)
+- Toolbar.createTextToolbar()
+- Toolbar.hideMenu()
+- Toolbar.setMenuText(a, b)
+- Toolbar.setMenuIcon(a, b)
+- Toolbar.addMenu(a, b, f, e)
+- Toolbar.addSeparator(a, b)
+- Toolbar.addItems(a, b, f, e, g)
+- Toolbar.addItem(a, b, f)
+- Toolbar.destroy()

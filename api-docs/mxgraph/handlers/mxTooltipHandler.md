@@ -1,0 +1,17 @@
+# mxTooltipHandler Methods
+
+- mxTooltipHandler.isEnabled()
+- mxTooltipHandler.setEnabled(a)
+- mxTooltipHandler.isHideOnHover()
+- mxTooltipHandler.setHideOnHover(a)
+- mxTooltipHandler.init()
+- mxTooltipHandler.getStateForEvent(a)
+- mxTooltipHandler.mouseDown(a, b)
+- mxTooltipHandler.mouseMove(a, b)
+- mxTooltipHandler.mouseUp(a, b)
+- mxTooltipHandler.resetTimer()
+- mxTooltipHandler.reset(a, b, c)
+- mxTooltipHandler.hide()
+- mxTooltipHandler.hideTooltip()
+- mxTooltipHandler.show(a, b, c)
+- mxTooltipHandler.destroy()

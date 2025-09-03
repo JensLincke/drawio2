@@ -1,0 +1,17 @@
+# mxGraphSelectionModel Methods
+
+- mxGraphSelectionModel.isSingleSelection()
+- mxGraphSelectionModel.setSingleSelection(a)
+- mxGraphSelectionModel.isSelected(a)
+- mxGraphSelectionModel.isEmpty()
+- mxGraphSelectionModel.clear()
+- mxGraphSelectionModel.setCell(a)
+- mxGraphSelectionModel.setCells(a)
+- mxGraphSelectionModel.getFirstSelectableCell(a)
+- mxGraphSelectionModel.addCell(a)
+- mxGraphSelectionModel.addCells(a)
+- mxGraphSelectionModel.removeCell(a)
+- mxGraphSelectionModel.removeCells(a)
+- mxGraphSelectionModel.changeSelection(a, b)
+- mxGraphSelectionModel.cellAdded(a)
+- mxGraphSelectionModel.cellRemoved(a)

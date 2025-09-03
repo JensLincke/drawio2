@@ -1,0 +1,18 @@
+# mxOutline Methods
+
+- mxOutline.init(a)
+- mxOutline.isEnabled()
+- mxOutline.setEnabled(a)
+- mxOutline.isSuspended()
+- mxOutline.setSuspended(a)
+- mxOutline.isScrolling()
+- mxOutline.createSvg()
+- mxOutline.addGestureListeners(a)
+- mxOutline.getViewBox()
+- mxOutline.updateSvg()
+- mxOutline.updateDrawPane()
+- mxOutline.processSvg(a)
+- mxOutline.updateViewport()
+- mxOutline.createViewport()
+- mxOutline.update(a)
+- mxOutline.destroy()
